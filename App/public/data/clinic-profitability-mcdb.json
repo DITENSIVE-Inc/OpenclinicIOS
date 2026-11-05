@@ -1,0 +1,1166 @@
+{
+ "meta": {
+  "source": "医療法人経営情報データベースシステム（MCDB）を活用した分析結果（厚生労働省・福祉医療機構）",
+  "fiscalYear": "2024年度",
+  "fiscalPeriod": "決算期：2024年4月〜2025年3月",
+  "reportTitle": "【施設】公表資料_2024(R6)_20260930",
+  "publishedAt": "2026年7月10日、2026年9月30日（一部追記）",
+  "landingPage": "https://www.wam.go.jp/content/wamnet/pcpub/top/iryojigyoresult/2024/2024.html",
+  "url": "https://www.wam.go.jp/content/files/pcpub/top/iryojigyo/r6_2_3.pdf",
+  "table": "施設の種類別にみた経営指標｜都道府県別（無床診療所）（p.47–66）",
+  "category": "医療法人が開設する無床の医科診療所（施設単位）",
+  "nationalColumn": "施設類型別③④「診療所（医科）入院収益なし」",
+  "suppression": "対象施設数（n）が100未満の都道府県は公表資料で省略",
+  "omitted": [
+   "青森県"
+  ],
+  "smallSampleThreshold": 200,
+  "scoredMetric": "医業収益対医業利益率（中央値）",
+  "corporate": {
+   "reportTitle": "【法人】公表資料_2024(R6)_20260930",
+   "url": "https://www.wam.go.jp/content/files/pcpub/top/iryojigyo/r6_3_4.pdf",
+   "table": "都道府県別の経営状況（p.39–42）",
+   "category": "医療法人全体（病院・診療所・歯科などを開設する全法人）"
+  },
+  "retrievedAt": "2026-10-11",
+  "generator": "scripts/fetch-mcdb-profitability.mjs"
+ },
+ "national": {
+  "facilities": 24096,
+  "marginMean": 0.049,
+  "marginMedian": 0.019,
+  "ordinaryMarginMean": 0.062,
+  "ordinaryMarginMedian": 0.033,
+  "deficitShare": 0.416,
+  "ordinaryDeficitShare": 0.353,
+  "revenueMeanThousandYen": 179839,
+  "revenueMedianThousandYen": 132732,
+  "corporate": {
+   "corporations": 41947,
+   "revenueMeanThousandYen": 393058,
+   "marginMean": 0.01,
+   "ordinaryMarginMean": 0.023,
+   "deficitShare": 0.449,
+   "ordinaryDeficitShare": 0.359
+  }
+ },
+ "prefectures": [
+  {
+   "code": 1,
+   "name": "北海道",
+   "clinic": {
+    "facilities": 851,
+    "marginMean": 0.048,
+    "marginMedian": 0.02,
+    "ordinaryMarginMean": 0.071,
+    "ordinaryMarginMedian": 0.039,
+    "deficitShare": 0.411,
+    "ordinaryDeficitShare": 0.336,
+    "revenueMeanThousandYen": 183380,
+    "revenueMedianThousandYen": 134857,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 1977,
+    "revenueMeanThousandYen": 504377,
+    "marginMean": -0.009,
+    "ordinaryMarginMean": 0.003,
+    "deficitShare": 0.474,
+    "ordinaryDeficitShare": 0.363
+   }
+  },
+  {
+   "code": 2,
+   "name": "青森県",
+   "clinic": null,
+   "corporate": {
+    "corporations": 177,
+    "revenueMeanThousandYen": 402107,
+    "marginMean": -0.006,
+    "ordinaryMarginMean": 0.011,
+    "deficitShare": 0.424,
+    "ordinaryDeficitShare": 0.362
+   }
+  },
+  {
+   "code": 3,
+   "name": "岩手県",
+   "clinic": {
+    "facilities": 189,
+    "marginMean": 0.042,
+    "marginMedian": 0.006,
+    "ordinaryMarginMean": 0.056,
+    "ordinaryMarginMedian": 0.018,
+    "deficitShare": 0.476,
+    "ordinaryDeficitShare": 0.354,
+    "revenueMeanThousandYen": 174550,
+    "revenueMedianThousandYen": 141533,
+    "smallSample": true
+   },
+   "corporate": {
+    "corporations": 316,
+    "revenueMeanThousandYen": 433706,
+    "marginMean": 0.019,
+    "ordinaryMarginMean": 0.029,
+    "deficitShare": 0.468,
+    "ordinaryDeficitShare": 0.339
+   }
+  },
+  {
+   "code": 4,
+   "name": "宮城県",
+   "clinic": {
+    "facilities": 258,
+    "marginMean": 0.037,
+    "marginMedian": 0.023,
+    "ordinaryMarginMean": 0.055,
+    "ordinaryMarginMedian": 0.036,
+    "deficitShare": 0.399,
+    "ordinaryDeficitShare": 0.326,
+    "revenueMeanThousandYen": 164828,
+    "revenueMedianThousandYen": 134936,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 597,
+    "revenueMeanThousandYen": 275814,
+    "marginMean": 0.021,
+    "ordinaryMarginMean": 0.035,
+    "deficitShare": 0.404,
+    "ordinaryDeficitShare": 0.307
+   }
+  },
+  {
+   "code": 5,
+   "name": "秋田県",
+   "clinic": {
+    "facilities": 156,
+    "marginMean": 0.027,
+    "marginMedian": 0.019,
+    "ordinaryMarginMean": 0.041,
+    "ordinaryMarginMedian": 0.028,
+    "deficitShare": 0.429,
+    "ordinaryDeficitShare": 0.353,
+    "revenueMeanThousandYen": 150566,
+    "revenueMedianThousandYen": 119673,
+    "smallSample": true
+   },
+   "corporate": {
+    "corporations": 280,
+    "revenueMeanThousandYen": 388610,
+    "marginMean": -0.015,
+    "ordinaryMarginMean": -0.004,
+    "deficitShare": 0.454,
+    "ordinaryDeficitShare": 0.361
+   }
+  },
+  {
+   "code": 6,
+   "name": "山形県",
+   "clinic": {
+    "facilities": 297,
+    "marginMean": 0.035,
+    "marginMedian": 0.006,
+    "ordinaryMarginMean": 0.048,
+    "ordinaryMarginMedian": 0.014,
+    "deficitShare": 0.475,
+    "ordinaryDeficitShare": 0.397,
+    "revenueMeanThousandYen": 142588,
+    "revenueMedianThousandYen": 123662,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 391,
+    "revenueMeanThousandYen": 303295,
+    "marginMean": 0.01,
+    "ordinaryMarginMean": 0.018,
+    "deficitShare": 0.45,
+    "ordinaryDeficitShare": 0.381
+   }
+  },
+  {
+   "code": 7,
+   "name": "福島県",
+   "clinic": {
+    "facilities": 436,
+    "marginMean": 0.02,
+    "marginMedian": 0.007,
+    "ordinaryMarginMean": 0.037,
+    "ordinaryMarginMedian": 0.021,
+    "deficitShare": 0.452,
+    "ordinaryDeficitShare": 0.381,
+    "revenueMeanThousandYen": 158718,
+    "revenueMedianThousandYen": 129314,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 644,
+    "revenueMeanThousandYen": 340019,
+    "marginMean": 0.004,
+    "ordinaryMarginMean": 0.018,
+    "deficitShare": 0.491,
+    "ordinaryDeficitShare": 0.39
+   }
+  },
+  {
+   "code": 8,
+   "name": "茨城県",
+   "clinic": {
+    "facilities": 484,
+    "marginMean": 0.059,
+    "marginMedian": 0.03,
+    "ordinaryMarginMean": 0.073,
+    "ordinaryMarginMedian": 0.04,
+    "deficitShare": 0.393,
+    "ordinaryDeficitShare": 0.345,
+    "revenueMeanThousandYen": 194279,
+    "revenueMedianThousandYen": 146413,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 826,
+    "revenueMeanThousandYen": 465467,
+    "marginMean": 0.007,
+    "ordinaryMarginMean": 0.022,
+    "deficitShare": 0.443,
+    "ordinaryDeficitShare": 0.355
+   }
+  },
+  {
+   "code": 9,
+   "name": "栃木県",
+   "clinic": {
+    "facilities": 388,
+    "marginMean": 0.032,
+    "marginMedian": 0.017,
+    "ordinaryMarginMean": 0.045,
+    "ordinaryMarginMedian": 0.03,
+    "deficitShare": 0.428,
+    "ordinaryDeficitShare": 0.371,
+    "revenueMeanThousandYen": 182322,
+    "revenueMedianThousandYen": 136989,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 681,
+    "revenueMeanThousandYen": 385771,
+    "marginMean": 0.012,
+    "ordinaryMarginMean": 0.026,
+    "deficitShare": 0.461,
+    "ordinaryDeficitShare": 0.373
+   }
+  },
+  {
+   "code": 10,
+   "name": "群馬県",
+   "clinic": {
+    "facilities": 486,
+    "marginMean": 0.042,
+    "marginMedian": 0.017,
+    "ordinaryMarginMean": 0.056,
+    "ordinaryMarginMedian": 0.032,
+    "deficitShare": 0.436,
+    "ordinaryDeficitShare": 0.354,
+    "revenueMeanThousandYen": 182137,
+    "revenueMedianThousandYen": 130544,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 717,
+    "revenueMeanThousandYen": 388903,
+    "marginMean": 0.014,
+    "ordinaryMarginMean": 0.029,
+    "deficitShare": 0.452,
+    "ordinaryDeficitShare": 0.358
+   }
+  },
+  {
+   "code": 11,
+   "name": "埼玉県",
+   "clinic": {
+    "facilities": 1003,
+    "marginMean": 0.058,
+    "marginMedian": 0.032,
+    "ordinaryMarginMean": 0.069,
+    "ordinaryMarginMedian": 0.043,
+    "deficitShare": 0.376,
+    "ordinaryDeficitShare": 0.328,
+    "revenueMeanThousandYen": 203366,
+    "revenueMedianThousandYen": 146574,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 1583,
+    "revenueMeanThousandYen": 274324,
+    "marginMean": 0.027,
+    "ordinaryMarginMean": 0.042,
+    "deficitShare": 0.437,
+    "ordinaryDeficitShare": 0.341
+   }
+  },
+  {
+   "code": 12,
+   "name": "千葉県",
+   "clinic": {
+    "facilities": 838,
+    "marginMean": 0.074,
+    "marginMedian": 0.049,
+    "ordinaryMarginMean": 0.085,
+    "ordinaryMarginMedian": 0.058,
+    "deficitShare": 0.303,
+    "ordinaryDeficitShare": 0.254,
+    "revenueMeanThousandYen": 218713,
+    "revenueMedianThousandYen": 153438,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 1275,
+    "revenueMeanThousandYen": 383312,
+    "marginMean": 0.03,
+    "ordinaryMarginMean": 0.04,
+    "deficitShare": 0.354,
+    "ordinaryDeficitShare": 0.276
+   }
+  },
+  {
+   "code": 13,
+   "name": "東京都",
+   "clinic": {
+    "facilities": 2586,
+    "marginMean": 0.053,
+    "marginMedian": 0.021,
+    "ordinaryMarginMean": 0.061,
+    "ordinaryMarginMedian": 0.032,
+    "deficitShare": 0.412,
+    "ordinaryDeficitShare": 0.363,
+    "revenueMeanThousandYen": 207359,
+    "revenueMedianThousandYen": 137826,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 4626,
+    "revenueMeanThousandYen": 388048,
+    "marginMean": 0.015,
+    "ordinaryMarginMean": 0.025,
+    "deficitShare": 0.467,
+    "ordinaryDeficitShare": 0.381
+   }
+  },
+  {
+   "code": 14,
+   "name": "神奈川県",
+   "clinic": {
+    "facilities": 1706,
+    "marginMean": 0.064,
+    "marginMedian": 0.027,
+    "ordinaryMarginMean": 0.074,
+    "ordinaryMarginMedian": 0.038,
+    "deficitShare": 0.387,
+    "ordinaryDeficitShare": 0.338,
+    "revenueMeanThousandYen": 203894,
+    "revenueMedianThousandYen": 143773,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 2654,
+    "revenueMeanThousandYen": 388719,
+    "marginMean": 0.021,
+    "ordinaryMarginMean": 0.031,
+    "deficitShare": 0.431,
+    "ordinaryDeficitShare": 0.346
+   }
+  },
+  {
+   "code": 15,
+   "name": "新潟県",
+   "clinic": {
+    "facilities": 474,
+    "marginMean": 0.055,
+    "marginMedian": 0.018,
+    "ordinaryMarginMean": 0.068,
+    "ordinaryMarginMedian": 0.038,
+    "deficitShare": 0.418,
+    "ordinaryDeficitShare": 0.331,
+    "revenueMeanThousandYen": 149290,
+    "revenueMedianThousandYen": 118768,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 730,
+    "revenueMeanThousandYen": 377267,
+    "marginMean": 0.011,
+    "ordinaryMarginMean": 0.021,
+    "deficitShare": 0.432,
+    "ordinaryDeficitShare": 0.342
+   }
+  },
+  {
+   "code": 16,
+   "name": "富山県",
+   "clinic": {
+    "facilities": 138,
+    "marginMean": 0.062,
+    "marginMedian": 0.012,
+    "ordinaryMarginMean": 0.077,
+    "ordinaryMarginMedian": 0.035,
+    "deficitShare": 0.464,
+    "ordinaryDeficitShare": 0.413,
+    "revenueMeanThousandYen": 167360,
+    "revenueMedianThousandYen": 127223,
+    "smallSample": true
+   },
+   "corporate": {
+    "corporations": 264,
+    "revenueMeanThousandYen": 499757,
+    "marginMean": 0.004,
+    "ordinaryMarginMean": 0.018,
+    "deficitShare": 0.458,
+    "ordinaryDeficitShare": 0.364
+   }
+  },
+  {
+   "code": 17,
+   "name": "石川県",
+   "clinic": {
+    "facilities": 257,
+    "marginMean": 0.081,
+    "marginMedian": 0.043,
+    "ordinaryMarginMean": 0.094,
+    "ordinaryMarginMedian": 0.057,
+    "deficitShare": 0.35,
+    "ordinaryDeficitShare": 0.296,
+    "revenueMeanThousandYen": 147602,
+    "revenueMedianThousandYen": 126183,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 399,
+    "revenueMeanThousandYen": 381484,
+    "marginMean": 0.015,
+    "ordinaryMarginMean": 0.03,
+    "deficitShare": 0.409,
+    "ordinaryDeficitShare": 0.316
+   }
+  },
+  {
+   "code": 18,
+   "name": "福井県",
+   "clinic": {
+    "facilities": 157,
+    "marginMean": 0.049,
+    "marginMedian": 0.02,
+    "ordinaryMarginMean": 0.067,
+    "ordinaryMarginMedian": 0.029,
+    "deficitShare": 0.446,
+    "ordinaryDeficitShare": 0.382,
+    "revenueMeanThousandYen": 153976,
+    "revenueMedianThousandYen": 131223,
+    "smallSample": true
+   },
+   "corporate": {
+    "corporations": 288,
+    "revenueMeanThousandYen": 343273,
+    "marginMean": 0.008,
+    "ordinaryMarginMean": 0.022,
+    "deficitShare": 0.479,
+    "ordinaryDeficitShare": 0.368
+   }
+  },
+  {
+   "code": 19,
+   "name": "山梨県",
+   "clinic": {
+    "facilities": 131,
+    "marginMean": 0.051,
+    "marginMedian": 0.014,
+    "ordinaryMarginMean": 0.066,
+    "ordinaryMarginMedian": 0.031,
+    "deficitShare": 0.443,
+    "ordinaryDeficitShare": 0.389,
+    "revenueMeanThousandYen": 169046,
+    "revenueMedianThousandYen": 119383,
+    "smallSample": true
+   },
+   "corporate": {
+    "corporations": 202,
+    "revenueMeanThousandYen": 307083,
+    "marginMean": 0.01,
+    "ordinaryMarginMean": 0.029,
+    "deficitShare": 0.47,
+    "ordinaryDeficitShare": 0.376
+   }
+  },
+  {
+   "code": 20,
+   "name": "長野県",
+   "clinic": {
+    "facilities": 419,
+    "marginMean": 0.035,
+    "marginMedian": 0.012,
+    "ordinaryMarginMean": 0.051,
+    "ordinaryMarginMedian": 0.028,
+    "deficitShare": 0.449,
+    "ordinaryDeficitShare": 0.379,
+    "revenueMeanThousandYen": 148350,
+    "revenueMedianThousandYen": 124748,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 667,
+    "revenueMeanThousandYen": 352636,
+    "marginMean": 0.015,
+    "ordinaryMarginMean": 0.027,
+    "deficitShare": 0.457,
+    "ordinaryDeficitShare": 0.373
+   }
+  },
+  {
+   "code": 21,
+   "name": "岐阜県",
+   "clinic": {
+    "facilities": 381,
+    "marginMean": 0.044,
+    "marginMedian": 0.016,
+    "ordinaryMarginMean": 0.063,
+    "ordinaryMarginMedian": 0.039,
+    "deficitShare": 0.409,
+    "ordinaryDeficitShare": 0.346,
+    "revenueMeanThousandYen": 181418,
+    "revenueMedianThousandYen": 139776,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 653,
+    "revenueMeanThousandYen": 397944,
+    "marginMean": 0.006,
+    "ordinaryMarginMean": 0.02,
+    "deficitShare": 0.444,
+    "ordinaryDeficitShare": 0.351
+   }
+  },
+  {
+   "code": 22,
+   "name": "静岡県",
+   "clinic": {
+    "facilities": 878,
+    "marginMean": 0.051,
+    "marginMedian": 0.023,
+    "ordinaryMarginMean": 0.066,
+    "ordinaryMarginMedian": 0.037,
+    "deficitShare": 0.391,
+    "ordinaryDeficitShare": 0.341,
+    "revenueMeanThousandYen": 190984,
+    "revenueMedianThousandYen": 142262,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 1186,
+    "revenueMeanThousandYen": 355549,
+    "marginMean": 0.032,
+    "ordinaryMarginMean": 0.046,
+    "deficitShare": 0.399,
+    "ordinaryDeficitShare": 0.332
+   }
+  },
+  {
+   "code": 23,
+   "name": "愛知県",
+   "clinic": {
+    "facilities": 1361,
+    "marginMean": 0.061,
+    "marginMedian": 0.023,
+    "ordinaryMarginMean": 0.072,
+    "ordinaryMarginMedian": 0.034,
+    "deficitShare": 0.405,
+    "ordinaryDeficitShare": 0.35,
+    "revenueMeanThousandYen": 228937,
+    "revenueMedianThousandYen": 165910,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 2007,
+    "revenueMeanThousandYen": 503810,
+    "marginMean": 0.013,
+    "ordinaryMarginMean": 0.025,
+    "deficitShare": 0.44,
+    "ordinaryDeficitShare": 0.366
+   }
+  },
+  {
+   "code": 24,
+   "name": "三重県",
+   "clinic": {
+    "facilities": 370,
+    "marginMean": 0.051,
+    "marginMedian": 0.022,
+    "ordinaryMarginMean": 0.065,
+    "ordinaryMarginMedian": 0.033,
+    "deficitShare": 0.409,
+    "ordinaryDeficitShare": 0.362,
+    "revenueMeanThousandYen": 178054,
+    "revenueMedianThousandYen": 133134,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 585,
+    "revenueMeanThousandYen": 328259,
+    "marginMean": 0.014,
+    "ordinaryMarginMean": 0.026,
+    "deficitShare": 0.419,
+    "ordinaryDeficitShare": 0.357
+   }
+  },
+  {
+   "code": 25,
+   "name": "滋賀県",
+   "clinic": {
+    "facilities": 290,
+    "marginMean": 0.044,
+    "marginMedian": 0.026,
+    "ordinaryMarginMean": 0.065,
+    "ordinaryMarginMedian": 0.045,
+    "deficitShare": 0.369,
+    "ordinaryDeficitShare": 0.286,
+    "revenueMeanThousandYen": 173650,
+    "revenueMedianThousandYen": 134133,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 481,
+    "revenueMeanThousandYen": 307131,
+    "marginMean": 0.03,
+    "ordinaryMarginMean": 0.041,
+    "deficitShare": 0.351,
+    "ordinaryDeficitShare": 0.279
+   }
+  },
+  {
+   "code": 26,
+   "name": "京都府",
+   "clinic": {
+    "facilities": 498,
+    "marginMean": 0.057,
+    "marginMedian": 0.018,
+    "ordinaryMarginMean": 0.071,
+    "ordinaryMarginMedian": 0.036,
+    "deficitShare": 0.414,
+    "ordinaryDeficitShare": 0.345,
+    "revenueMeanThousandYen": 157222,
+    "revenueMedianThousandYen": 123552,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 681,
+    "revenueMeanThousandYen": 485752,
+    "marginMean": 0.006,
+    "ordinaryMarginMean": 0.011,
+    "deficitShare": 0.445,
+    "ordinaryDeficitShare": 0.369
+   }
+  },
+  {
+   "code": 27,
+   "name": "大阪府",
+   "clinic": {
+    "facilities": 1644,
+    "marginMean": 0.047,
+    "marginMedian": 0.02,
+    "ordinaryMarginMean": 0.058,
+    "ordinaryMarginMedian": 0.033,
+    "deficitShare": 0.417,
+    "ordinaryDeficitShare": 0.359,
+    "revenueMeanThousandYen": 190221,
+    "revenueMedianThousandYen": 136683,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 2919,
+    "revenueMeanThousandYen": 462665,
+    "marginMean": 0.004,
+    "ordinaryMarginMean": 0.015,
+    "deficitShare": 0.429,
+    "ordinaryDeficitShare": 0.349
+   }
+  },
+  {
+   "code": 28,
+   "name": "兵庫県",
+   "clinic": {
+    "facilities": 904,
+    "marginMean": 0.05,
+    "marginMedian": 0.018,
+    "ordinaryMarginMean": 0.062,
+    "ordinaryMarginMedian": 0.033,
+    "deficitShare": 0.438,
+    "ordinaryDeficitShare": 0.376,
+    "revenueMeanThousandYen": 171885,
+    "revenueMedianThousandYen": 126060,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 2024,
+    "revenueMeanThousandYen": 449875,
+    "marginMean": 0.014,
+    "ordinaryMarginMean": 0.023,
+    "deficitShare": 0.449,
+    "ordinaryDeficitShare": 0.361
+   }
+  },
+  {
+   "code": 29,
+   "name": "奈良県",
+   "clinic": {
+    "facilities": 132,
+    "marginMean": 0.07,
+    "marginMedian": 0.039,
+    "ordinaryMarginMean": 0.078,
+    "ordinaryMarginMedian": 0.05,
+    "deficitShare": 0.364,
+    "ordinaryDeficitShare": 0.333,
+    "revenueMeanThousandYen": 165370,
+    "revenueMedianThousandYen": 120986,
+    "smallSample": true
+   },
+   "corporate": {
+    "corporations": 292,
+    "revenueMeanThousandYen": 435134,
+    "marginMean": 0.009,
+    "ordinaryMarginMean": 0.025,
+    "deficitShare": 0.408,
+    "ordinaryDeficitShare": 0.336
+   }
+  },
+  {
+   "code": 30,
+   "name": "和歌山県",
+   "clinic": {
+    "facilities": 221,
+    "marginMean": 0.036,
+    "marginMedian": 0.009,
+    "ordinaryMarginMean": 0.053,
+    "ordinaryMarginMedian": 0.017,
+    "deficitShare": 0.457,
+    "ordinaryDeficitShare": 0.398,
+    "revenueMeanThousandYen": 144088,
+    "revenueMedianThousandYen": 117606,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 350,
+    "revenueMeanThousandYen": 368847,
+    "marginMean": 0.006,
+    "ordinaryMarginMean": 0.024,
+    "deficitShare": 0.449,
+    "ordinaryDeficitShare": 0.357
+   }
+  },
+  {
+   "code": 31,
+   "name": "鳥取県",
+   "clinic": {
+    "facilities": 178,
+    "marginMean": 0.037,
+    "marginMedian": 0.003,
+    "ordinaryMarginMean": 0.051,
+    "ordinaryMarginMedian": 0.02,
+    "deficitShare": 0.489,
+    "ordinaryDeficitShare": 0.393,
+    "revenueMeanThousandYen": 141532,
+    "revenueMedianThousandYen": 107969,
+    "smallSample": true
+   },
+   "corporate": {
+    "corporations": 253,
+    "revenueMeanThousandYen": 296213,
+    "marginMean": 0.003,
+    "ordinaryMarginMean": 0.018,
+    "deficitShare": 0.534,
+    "ordinaryDeficitShare": 0.403
+   }
+  },
+  {
+   "code": 32,
+   "name": "島根県",
+   "clinic": {
+    "facilities": 211,
+    "marginMean": 0.016,
+    "marginMedian": 0.008,
+    "ordinaryMarginMean": 0.038,
+    "ordinaryMarginMedian": 0.023,
+    "deficitShare": 0.455,
+    "ordinaryDeficitShare": 0.374,
+    "revenueMeanThousandYen": 135106,
+    "revenueMedianThousandYen": 105691,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 293,
+    "revenueMeanThousandYen": 250333,
+    "marginMean": -0.005,
+    "ordinaryMarginMean": 0.019,
+    "deficitShare": 0.461,
+    "ordinaryDeficitShare": 0.352
+   }
+  },
+  {
+   "code": 33,
+   "name": "岡山県",
+   "clinic": {
+    "facilities": 395,
+    "marginMean": 0.037,
+    "marginMedian": 0.012,
+    "ordinaryMarginMean": 0.052,
+    "ordinaryMarginMedian": 0.03,
+    "deficitShare": 0.441,
+    "ordinaryDeficitShare": 0.354,
+    "revenueMeanThousandYen": 154415,
+    "revenueMedianThousandYen": 119670,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 809,
+    "revenueMeanThousandYen": 333383,
+    "marginMean": 0.02,
+    "ordinaryMarginMean": 0.03,
+    "deficitShare": 0.445,
+    "ordinaryDeficitShare": 0.347
+   }
+  },
+  {
+   "code": 34,
+   "name": "広島県",
+   "clinic": {
+    "facilities": 768,
+    "marginMean": 0.057,
+    "marginMedian": 0.015,
+    "ordinaryMarginMean": 0.07,
+    "ordinaryMarginMedian": 0.027,
+    "deficitShare": 0.426,
+    "ordinaryDeficitShare": 0.376,
+    "revenueMeanThousandYen": 169396,
+    "revenueMedianThousandYen": 117579,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 1244,
+    "revenueMeanThousandYen": 371285,
+    "marginMean": 0.014,
+    "ordinaryMarginMean": 0.028,
+    "deficitShare": 0.445,
+    "ordinaryDeficitShare": 0.363
+   }
+  },
+  {
+   "code": 35,
+   "name": "山口県",
+   "clinic": {
+    "facilities": 433,
+    "marginMean": 0.038,
+    "marginMedian": 0.024,
+    "ordinaryMarginMean": 0.055,
+    "ordinaryMarginMedian": 0.039,
+    "deficitShare": 0.393,
+    "ordinaryDeficitShare": 0.33,
+    "revenueMeanThousandYen": 139008,
+    "revenueMedianThousandYen": 117920,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 644,
+    "revenueMeanThousandYen": 393682,
+    "marginMean": 0,
+    "ordinaryMarginMean": 0.014,
+    "deficitShare": 0.444,
+    "ordinaryDeficitShare": 0.348
+   }
+  },
+  {
+   "code": 36,
+   "name": "徳島県",
+   "clinic": {
+    "facilities": 265,
+    "marginMean": 0.048,
+    "marginMedian": 0.013,
+    "ordinaryMarginMean": 0.065,
+    "ordinaryMarginMedian": 0.029,
+    "deficitShare": 0.46,
+    "ordinaryDeficitShare": 0.366,
+    "revenueMeanThousandYen": 129443,
+    "revenueMedianThousandYen": 101701,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 477,
+    "revenueMeanThousandYen": 388996,
+    "marginMean": 0.006,
+    "ordinaryMarginMean": 0.024,
+    "deficitShare": 0.514,
+    "ordinaryDeficitShare": 0.365
+   }
+  },
+  {
+   "code": 37,
+   "name": "香川県",
+   "clinic": {
+    "facilities": 237,
+    "marginMean": 0.028,
+    "marginMedian": 0.024,
+    "ordinaryMarginMean": 0.039,
+    "ordinaryMarginMedian": 0.035,
+    "deficitShare": 0.409,
+    "ordinaryDeficitShare": 0.359,
+    "revenueMeanThousandYen": 145793,
+    "revenueMedianThousandYen": 116479,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 418,
+    "revenueMeanThousandYen": 282721,
+    "marginMean": 0.024,
+    "ordinaryMarginMean": 0.036,
+    "deficitShare": 0.426,
+    "ordinaryDeficitShare": 0.337
+   }
+  },
+  {
+   "code": 38,
+   "name": "愛媛県",
+   "clinic": {
+    "facilities": 488,
+    "marginMean": 0.017,
+    "marginMedian": 0,
+    "ordinaryMarginMean": 0.029,
+    "ordinaryMarginMedian": 0.016,
+    "deficitShare": 0.502,
+    "ordinaryDeficitShare": 0.422,
+    "revenueMeanThousandYen": 142330,
+    "revenueMedianThousandYen": 111969,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 763,
+    "revenueMeanThousandYen": 327776,
+    "marginMean": 0.002,
+    "ordinaryMarginMean": 0.017,
+    "deficitShare": 0.52,
+    "ordinaryDeficitShare": 0.415
+   }
+  },
+  {
+   "code": 39,
+   "name": "高知県",
+   "clinic": {
+    "facilities": 155,
+    "marginMean": 0.026,
+    "marginMedian": 0.014,
+    "ordinaryMarginMean": 0.047,
+    "ordinaryMarginMedian": 0.039,
+    "deficitShare": 0.452,
+    "ordinaryDeficitShare": 0.329,
+    "revenueMeanThousandYen": 135276,
+    "revenueMedianThousandYen": 117449,
+    "smallSample": true
+   },
+   "corporate": {
+    "corporations": 255,
+    "revenueMeanThousandYen": 436317,
+    "marginMean": -0.005,
+    "ordinaryMarginMean": 0.012,
+    "deficitShare": 0.494,
+    "ordinaryDeficitShare": 0.361
+   }
+  },
+  {
+   "code": 40,
+   "name": "福岡県",
+   "clinic": {
+    "facilities": 883,
+    "marginMean": 0.046,
+    "marginMedian": 0.019,
+    "ordinaryMarginMean": 0.062,
+    "ordinaryMarginMedian": 0.035,
+    "deficitShare": 0.417,
+    "ordinaryDeficitShare": 0.327,
+    "revenueMeanThousandYen": 151284,
+    "revenueMedianThousandYen": 119785,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 2449,
+    "revenueMeanThousandYen": 334678,
+    "marginMean": 0.012,
+    "ordinaryMarginMean": 0.026,
+    "deficitShare": 0.455,
+    "ordinaryDeficitShare": 0.351
+   }
+  },
+  {
+   "code": 41,
+   "name": "佐賀県",
+   "clinic": {
+    "facilities": 212,
+    "marginMean": 0.043,
+    "marginMedian": 0.016,
+    "ordinaryMarginMean": 0.056,
+    "ordinaryMarginMedian": 0.028,
+    "deficitShare": 0.42,
+    "ordinaryDeficitShare": 0.335,
+    "revenueMeanThousandYen": 166919,
+    "revenueMedianThousandYen": 128043,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 376,
+    "revenueMeanThousandYen": 432234,
+    "marginMean": 0.001,
+    "ordinaryMarginMean": 0.015,
+    "deficitShare": 0.481,
+    "ordinaryDeficitShare": 0.375
+   }
+  },
+  {
+   "code": 42,
+   "name": "長崎県",
+   "clinic": {
+    "facilities": 370,
+    "marginMean": 0.027,
+    "marginMedian": 0.014,
+    "ordinaryMarginMean": 0.043,
+    "ordinaryMarginMedian": 0.024,
+    "deficitShare": 0.422,
+    "ordinaryDeficitShare": 0.346,
+    "revenueMeanThousandYen": 140518,
+    "revenueMedianThousandYen": 113078,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 692,
+    "revenueMeanThousandYen": 385863,
+    "marginMean": 0.002,
+    "ordinaryMarginMean": 0.015,
+    "deficitShare": 0.452,
+    "ordinaryDeficitShare": 0.348
+   }
+  },
+  {
+   "code": 43,
+   "name": "熊本県",
+   "clinic": {
+    "facilities": 504,
+    "marginMean": 0.016,
+    "marginMedian": -0.007,
+    "ordinaryMarginMean": 0.033,
+    "ordinaryMarginMedian": 0.01,
+    "deficitShare": 0.528,
+    "ordinaryDeficitShare": 0.446,
+    "revenueMeanThousandYen": 148172,
+    "revenueMedianThousandYen": 120632,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 919,
+    "revenueMeanThousandYen": 421261,
+    "marginMean": -0.009,
+    "ordinaryMarginMean": 0.003,
+    "deficitShare": 0.531,
+    "ordinaryDeficitShare": 0.419
+   }
+  },
+  {
+   "code": 44,
+   "name": "大分県",
+   "clinic": {
+    "facilities": 160,
+    "marginMean": 0.019,
+    "marginMedian": 0.008,
+    "ordinaryMarginMean": 0.038,
+    "ordinaryMarginMedian": 0.018,
+    "deficitShare": 0.481,
+    "ordinaryDeficitShare": 0.425,
+    "revenueMeanThousandYen": 135419,
+    "revenueMedianThousandYen": 118710,
+    "smallSample": true
+   },
+   "corporate": {
+    "corporations": 399,
+    "revenueMeanThousandYen": 352289,
+    "marginMean": 0.012,
+    "ordinaryMarginMean": 0.026,
+    "deficitShare": 0.531,
+    "ordinaryDeficitShare": 0.426
+   }
+  },
+  {
+   "code": 45,
+   "name": "宮崎県",
+   "clinic": {
+    "facilities": 192,
+    "marginMean": 0.018,
+    "marginMedian": 0.011,
+    "ordinaryMarginMean": 0.033,
+    "ordinaryMarginMedian": 0.025,
+    "deficitShare": 0.464,
+    "ordinaryDeficitShare": 0.385,
+    "revenueMeanThousandYen": 155156,
+    "revenueMedianThousandYen": 131880,
+    "smallSample": true
+   },
+   "corporate": {
+    "corporations": 395,
+    "revenueMeanThousandYen": 283642,
+    "marginMean": 0.004,
+    "ordinaryMarginMean": 0.02,
+    "deficitShare": 0.499,
+    "ordinaryDeficitShare": 0.38
+   }
+  },
+  {
+   "code": 46,
+   "name": "鹿児島県",
+   "clinic": {
+    "facilities": 402,
+    "marginMean": 0.033,
+    "marginMedian": 0.003,
+    "ordinaryMarginMean": 0.046,
+    "ordinaryMarginMedian": 0.011,
+    "deficitShare": 0.493,
+    "ordinaryDeficitShare": 0.438,
+    "revenueMeanThousandYen": 160406,
+    "revenueMedianThousandYen": 120278,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 796,
+    "revenueMeanThousandYen": 420192,
+    "marginMean": -0.003,
+    "ordinaryMarginMean": 0.012,
+    "deficitShare": 0.526,
+    "ordinaryDeficitShare": 0.438
+   }
+  },
+  {
+   "code": 47,
+   "name": "沖縄県",
+   "clinic": {
+    "facilities": 219,
+    "marginMean": 0.037,
+    "marginMedian": 0.039,
+    "ordinaryMarginMean": 0.054,
+    "ordinaryMarginMedian": 0.06,
+    "deficitShare": 0.347,
+    "ordinaryDeficitShare": 0.279,
+    "revenueMeanThousandYen": 196354,
+    "revenueMedianThousandYen": 136906,
+    "smallSample": false
+   },
+   "corporate": {
+    "corporations": 293,
+    "revenueMeanThousandYen": 468997,
+    "marginMean": -0.008,
+    "ordinaryMarginMean": 0.001,
+    "deficitShare": 0.365,
+    "ordinaryDeficitShare": 0.307
+   }
+  }
+ ]
+}

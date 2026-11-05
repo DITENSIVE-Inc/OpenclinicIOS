@@ -1,0 +1,267 @@
+{
+ "prefCode": 24,
+ "prefName": "三重県",
+ "unit": "千円",
+ "source": {
+  "name": "三重県 医療法人の事業報告書等（三重県データベース）",
+  "url": "https://www.db.pref.mie.lg.jp/db/view/index.asp?INFO=TVN3ek15eHJNRGd3TVRBdw%3D%3D",
+  "totalFilings": 3059,
+  "retrievedAt": "2026-10-11"
+ },
+ "method": "令和6〜7年決算の届出から、歯科を除く診療所名の法人を保健所管内ごとに最大3件無作為抽出し、損益計算書（様式4-2）の本来業務事業収益・本来業務事業損益・経常損益を目視で転記。スキャン画像のため転記誤りの可能性あり。休眠法人（事業収益0）は除外。",
+ "records": [
+  {
+   "name": "医療法人なかむら心身医学クリニック",
+   "healthCenter": "伊勢",
+   "fiscalYear": "令和6年",
+   "closingMonth": "7月期",
+   "specialty": "精神科・心療内科",
+   "revenue": 69876,
+   "operatingProfit": -1214,
+   "ordinaryProfit": -500,
+   "sourceUrl": "https://www.db.pref.mie.lg.jp/db/view/image.asp?file=20250311_1824_2_file.pdf&INFO=TERNekxHc3dPREF4TURBPQ%3D%3D"
+  },
+  {
+   "name": "医療法人やまなかこどもクリニック",
+   "healthCenter": "伊勢",
+   "fiscalYear": "令和7年",
+   "closingMonth": "8月期",
+   "specialty": "小児科",
+   "revenue": 103529,
+   "operatingProfit": -62461,
+   "ordinaryProfit": -62154,
+   "sourceUrl": "https://www.db.pref.mie.lg.jp/db/view/image.asp?file=20260202_2580_2_file.pdf&INFO=TERNekxHc3dPREF4TURBPQ%3D%3D"
+  },
+  {
+   "name": "医療法人坂元皮フ科",
+   "healthCenter": "伊賀",
+   "fiscalYear": "令和7年",
+   "closingMonth": "9月期",
+   "specialty": "皮膚科",
+   "revenue": 113390,
+   "operatingProfit": -1196,
+   "ordinaryProfit": -42,
+   "sourceUrl": "https://www.db.pref.mie.lg.jp/db/view/image.asp?file=20260202_2590_2_file.pdf&INFO=TERNekxHc3dPREF4TURBPQ%3D%3D"
+  },
+  {
+   "name": "医療法人浅野整形外科内科",
+   "healthCenter": "伊賀",
+   "fiscalYear": "令和7年",
+   "closingMonth": "5月期",
+   "specialty": "整形外科",
+   "revenue": 200746,
+   "operatingProfit": -5540,
+   "ordinaryProfit": -545,
+   "sourceUrl": "https://www.db.pref.mie.lg.jp/db/view/image.asp?file=20251104_2303_2_file.pdf&INFO=TERNekxHc3dPREF4TURBPQ%3D%3D"
+  },
+  {
+   "name": "医療法人ひなが胃腸内科・乳腺外科",
+   "healthCenter": "四日市",
+   "fiscalYear": "令和6年",
+   "closingMonth": "8月期",
+   "specialty": "内科",
+   "revenue": 270487,
+   "operatingProfit": 18270,
+   "ordinaryProfit": 20739,
+   "sourceUrl": "https://www.db.pref.mie.lg.jp/db/view/image.asp?file=20250703_1908_2_file.pdf&INFO=TERNekxHc3dPREF4TURBPQ%3D%3D"
+  },
+  {
+   "name": "医療法人中嶋内科",
+   "healthCenter": "四日市",
+   "fiscalYear": "令和6年",
+   "closingMonth": "8月期",
+   "specialty": "内科",
+   "revenue": 109192,
+   "operatingProfit": 2115,
+   "ordinaryProfit": 2684,
+   "sourceUrl": "https://www.db.pref.mie.lg.jp/db/view/image.asp?file=20251106_1910_2_file.pdf&INFO=TERNekxHc3dPREF4TURBPQ%3D%3D"
+  },
+  {
+   "name": "医療法人はしづめクリニック",
+   "healthCenter": "尾鷲",
+   "fiscalYear": "令和7年",
+   "closingMonth": "4月期",
+   "specialty": "その他・不明",
+   "revenue": 41481,
+   "operatingProfit": -15955,
+   "ordinaryProfit": -30745,
+   "sourceUrl": "https://www.db.pref.mie.lg.jp/db/view/image.asp?file=20251104_2316_2_file.pdf&INFO=TERNekxHc3dPREF4TURBPQ%3D%3D"
+  },
+  {
+   "name": "医療法人和田眼科クリニック",
+   "healthCenter": "尾鷲",
+   "fiscalYear": "令和6年",
+   "closingMonth": "2月期",
+   "specialty": "眼科",
+   "revenue": 156509,
+   "operatingProfit": -11958,
+   "ordinaryProfit": -11427,
+   "sourceUrl": "https://www.db.pref.mie.lg.jp/db/view/image.asp?file=20241002_1614_2_file.pdf&INFO=TERNekxHc3dPREF4TURBPQ%3D%3D"
+  },
+  {
+   "name": "医療法人西村整形外科",
+   "healthCenter": "尾鷲",
+   "fiscalYear": "令和6年",
+   "closingMonth": "3月期",
+   "specialty": "整形外科",
+   "revenue": 141658,
+   "operatingProfit": -10292,
+   "ordinaryProfit": -10135,
+   "sourceUrl": "https://www.db.pref.mie.lg.jp/db/view/image.asp?file=20241002_1617_2_file.pdf&INFO=TERNekxHc3dPREF4TURBPQ%3D%3D"
+  },
+  {
+   "name": "医療法人増山医院",
+   "healthCenter": "松阪",
+   "fiscalYear": "令和6年",
+   "closingMonth": "9月期",
+   "specialty": "その他・不明",
+   "revenue": 55045,
+   "operatingProfit": -3957,
+   "ordinaryProfit": 2438,
+   "sourceUrl": "https://www.db.pref.mie.lg.jp/db/view/image.asp?file=20250311_1801_2_file.pdf&INFO=TERNekxHc3dPREF4TURBPQ%3D%3D"
+  },
+  {
+   "name": "医療法人石田クリニック",
+   "healthCenter": "松阪",
+   "fiscalYear": "令和7年",
+   "closingMonth": "7月期",
+   "specialty": "その他・不明",
+   "revenue": 163270,
+   "operatingProfit": 36951,
+   "ordinaryProfit": 37528,
+   "sourceUrl": "https://www.db.pref.mie.lg.jp/db/view/image.asp?file=20251209_2438_2_file.pdf&INFO=TERNekxHc3dPREF4TURBPQ%3D%3D"
+  },
+  {
+   "name": "医療法人社団 北村整形外科",
+   "healthCenter": "松阪",
+   "fiscalYear": "令和6年",
+   "closingMonth": "8月期",
+   "specialty": "整形外科",
+   "revenue": 14651,
+   "operatingProfit": -1983,
+   "ordinaryProfit": -1794,
+   "sourceUrl": "https://www.db.pref.mie.lg.jp/db/view/image.asp?file=20260202_2549_2_file.pdf&INFO=TERNekxHc3dPREF4TURBPQ%3D%3D"
+  },
+  {
+   "name": "医療法人すずき胃腸肛門クリニック",
+   "healthCenter": "桑名",
+   "fiscalYear": "令和7年",
+   "closingMonth": "5月期",
+   "specialty": "内科",
+   "revenue": 98044,
+   "operatingProfit": -6142,
+   "ordinaryProfit": -5072,
+   "sourceUrl": "https://www.db.pref.mie.lg.jp/db/view/image.asp?file=20251104_2053_2_file.pdf&INFO=TERNekxHc3dPREF4TURBPQ%3D%3D"
+  },
+  {
+   "name": "医療法人森山クリニック",
+   "healthCenter": "桑名",
+   "fiscalYear": "令和6年",
+   "closingMonth": "8月期",
+   "specialty": "その他・不明",
+   "revenue": 79988,
+   "operatingProfit": -3032,
+   "ordinaryProfit": -2803,
+   "sourceUrl": "https://www.db.pref.mie.lg.jp/db/view/image.asp?file=20250310_1640_2_file.pdf&INFO=TERNekxHc3dPREF4TURBPQ%3D%3D"
+  },
+  {
+   "name": "医療法人社団 川越伊藤医院",
+   "healthCenter": "桑名",
+   "fiscalYear": "令和6年",
+   "closingMonth": "3月期",
+   "specialty": "その他・不明",
+   "revenue": 519260,
+   "operatingProfit": 9094,
+   "ordinaryProfit": 56566,
+   "sourceUrl": "https://www.db.pref.mie.lg.jp/db/view/image.asp?file=20241001_1317_2_file.pdf&INFO=TERNekxHc3dPREF4TURBPQ%3D%3D"
+  },
+  {
+   "name": "医療法人ますだクリニック",
+   "healthCenter": "津",
+   "fiscalYear": "令和7年",
+   "closingMonth": "6月期",
+   "specialty": "その他・不明",
+   "revenue": 74390,
+   "operatingProfit": 17955,
+   "ordinaryProfit": 18039,
+   "sourceUrl": "https://www.db.pref.mie.lg.jp/db/view/image.asp?file=20251209_2430_2_file.pdf&INFO=TERNekxHc3dPREF4TURBPQ%3D%3D"
+  },
+  {
+   "name": "医療法人まつばら整形外科クリニック",
+   "healthCenter": "津",
+   "fiscalYear": "令和6年",
+   "closingMonth": "9月期",
+   "specialty": "整形外科",
+   "revenue": 265145,
+   "operatingProfit": 60437,
+   "ordinaryProfit": 60117,
+   "sourceUrl": "https://www.db.pref.mie.lg.jp/db/view/image.asp?file=20250311_1764_2_file.pdf&INFO=TERNekxHc3dPREF4TURBPQ%3D%3D"
+  },
+  {
+   "name": "医療法人川浪内科",
+   "healthCenter": "津",
+   "fiscalYear": "令和7年",
+   "closingMonth": "9月期",
+   "specialty": "内科",
+   "revenue": 115934,
+   "operatingProfit": -3950,
+   "ordinaryProfit": -2238,
+   "sourceUrl": "https://www.db.pref.mie.lg.jp/db/view/image.asp?file=20260601_2685_2_file.pdf&INFO=TERNekxHc3dPREF4TURBPQ%3D%3D"
+  },
+  {
+   "name": "医療法人とみむろクリニック",
+   "healthCenter": "熊野",
+   "fiscalYear": "令和6年",
+   "closingMonth": "2月期",
+   "specialty": "その他・不明",
+   "revenue": 120235,
+   "operatingProfit": 14241,
+   "ordinaryProfit": 14571,
+   "sourceUrl": "https://www.db.pref.mie.lg.jp/db/view/image.asp?file=20250311_1883_2_file.pdf&INFO=TERNekxHc3dPREF4TURBPQ%3D%3D"
+  },
+  {
+   "name": "医療法人社団 小山医院",
+   "healthCenter": "熊野",
+   "fiscalYear": "令和7年",
+   "closingMonth": "9月期",
+   "specialty": "その他・不明",
+   "revenue": 35870,
+   "operatingProfit": -8491,
+   "ordinaryProfit": 1583,
+   "sourceUrl": "https://www.db.pref.mie.lg.jp/db/view/image.asp?file=20260202_2605_2_file.pdf&INFO=TERNekxHc3dPREF4TURBPQ%3D%3D"
+  },
+  {
+   "name": "医療法人かつき内科",
+   "healthCenter": "鈴鹿",
+   "fiscalYear": "令和7年",
+   "closingMonth": "6月期",
+   "specialty": "内科",
+   "revenue": 174669,
+   "operatingProfit": 20469,
+   "ordinaryProfit": 20738,
+   "sourceUrl": "https://www.db.pref.mie.lg.jp/db/view/image.asp?file=20251104_2168_2_file.pdf&INFO=TERNekxHc3dPREF4TURBPQ%3D%3D"
+  },
+  {
+   "name": "医療法人のぼのクリニック",
+   "healthCenter": "鈴鹿",
+   "fiscalYear": "令和7年",
+   "closingMonth": "8月期",
+   "specialty": "その他・不明",
+   "revenue": 63237,
+   "operatingProfit": -7091,
+   "ordinaryProfit": 10394,
+   "sourceUrl": "https://www.db.pref.mie.lg.jp/db/view/image.asp?file=20260202_2513_2_file.pdf&INFO=TERNekxHc3dPREF4TURBPQ%3D%3D"
+  },
+  {
+   "name": "医療法人社団 吉野クリニック",
+   "healthCenter": "鈴鹿",
+   "fiscalYear": "令和7年",
+   "closingMonth": "5月期",
+   "specialty": "その他・不明",
+   "revenue": 180541,
+   "operatingProfit": -11361,
+   "ordinaryProfit": -7733,
+   "sourceUrl": "https://www.db.pref.mie.lg.jp/db/view/image.asp?file=20251104_2154_2_file.pdf&INFO=TERNekxHc3dPREF4TURBPQ%3D%3D"
+  }
+ ]
+}
