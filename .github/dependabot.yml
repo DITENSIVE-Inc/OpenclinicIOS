@@ -1,0 +1,14 @@
+version: 2
+updates:
+  # CapApp-SPM の capacitor-swift-pm。Web 側の Capacitor バージョンと揃えること。
+  - package-ecosystem: swift
+    directory: "/CapApp-SPM"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
