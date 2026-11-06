@@ -1,0 +1,4 @@
+// Debug build settings for the Capacitor iOS app.
+// CocoaPods settings are pulled in only when that file exists.
+#include? "Pods/Target Support Files/Pods-App/Pods-App.debug.xcconfig"
+CAPACITOR_DEBUG = true

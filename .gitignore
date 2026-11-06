@@ -1,0 +1,7 @@
+.DS_Store
+xcuserdata/
+DerivedData/
+*.xcuserstate
+
+# チャット引き継ぎ用。リポジトリには入れない。
+docs/web-parity-handoff.md
