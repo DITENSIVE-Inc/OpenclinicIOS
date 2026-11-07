@@ -1,0 +1,10 @@
+{
+  "synced_at": "2026-11-07T05:09:29Z",
+  "web_app_url": "https://opencrinic-ai.vercel.app",
+  "web_ref": "main",
+  "web_sha": "fa79083f603ecb3c04dbdeb9ec32adb3ab9b76ef",
+  "deployment_id": "dpl_53wpSHr92oB6KD9qZkPYNoPi4yA8",
+  "copied_from_checkout": 3497,
+  "downloaded_paths": 3513,
+  "note": "UI shell (/_next, index.html) comes from the deployed web app. Static /data and /maplibre prefer the web git checkout when provided."
+}
