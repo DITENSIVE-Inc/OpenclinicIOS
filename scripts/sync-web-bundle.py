@@ -55,11 +55,17 @@ def is_same_origin(base: str, candidate: str) -> bool:
     return (c.scheme, c.netloc) == (b.scheme, b.netloc)
 
 
-def to_site_path(base: str, raw: str) -> str | None:
+def to_site_path(origin: str, raw: str, resolve_against: str | None = None) -> str | None:
     if raw.startswith("data:") or raw.startswith("blob:") or raw.startswith("#"):
         return None
-    absolute = urljoin(base if base.endswith("/") else base + "/", raw)
-    if not is_same_origin(base, absolute):
+    # CSS/JS often use relative urls (e.g. ../media/foo.woff2). Resolve those
+    # against the asset URL, not the site root — otherwise fonts become /media/...
+    # and are dropped by the /_next/ filter.
+    base = resolve_against or origin
+    if not base.endswith("/") and not re.search(r"\.[A-Za-z0-9]+$", urlparse(base).path):
+        base = base + "/"
+    absolute = urljoin(base, raw)
+    if not is_same_origin(origin, absolute):
         return None
     path = urlparse(absolute).path
     if not path.startswith("/"):
@@ -69,20 +75,25 @@ def to_site_path(base: str, raw: str) -> str | None:
     return path
 
 
-def extract_paths(base: str, body: str, from_css: bool = False) -> set[str]:
+def extract_paths(
+    base: str,
+    body: str,
+    from_css: bool = False,
+    source_url: str | None = None,
+) -> set[str]:
     found: set[str] = set()
     for match in ASSET_RE.finditer(body):
-        path = to_site_path(base, match.group("url"))
+        path = to_site_path(base, match.group("url"), resolve_against=source_url)
         if path:
             found.add(path)
     if from_css:
         for match in CSS_URL_RE.finditer(body):
-            path = to_site_path(base, match.group("url"))
+            path = to_site_path(base, match.group("url"), resolve_against=source_url)
             if path and path.startswith("/_next/"):
                 found.add(path)
     # Chunk paths without a leading slash sometimes appear in Turbopack payloads.
     for match in re.finditer(r"""(?P<p>static/immutable/[A-Za-z0-9_./+-]+\.(?:js|mjs|css|woff2))""", body):
-        path = to_site_path(base, "/_next/" + match.group("p"))
+        path = to_site_path(base, "/_next/" + match.group("p"), resolve_against=source_url)
         if path:
             found.add(path)
     return found
@@ -108,16 +119,33 @@ def write_bytes(path: Path, data: bytes) -> None:
     path.write_bytes(data)
 
 
-def download_graph(base_url: str, seed_paths: Iterable[str], out_dir: Path) -> dict[str, str]:
+def download_graph(
+    base_url: str,
+    seed_paths: Iterable[str],
+    out_dir: Path,
+    skip_prefixes: Iterable[str] = (),
+) -> dict[str, str]:
+    """Crawl deploy assets into out_dir.
+
+    skip_prefixes: path prefixes already populated from the web checkout
+    (typically /data/ and /maplibre/). Still allow explicit seed hits that
+    already exist on disk to be skipped without re-download.
+    """
     pending = set(seed_paths)
     seen: set[str] = set()
     downloaded: dict[str, str] = {}
+    skips = tuple(skip_prefixes)
+
+    def ignored(path: str) -> bool:
+        return any(path == p.rstrip("/") or path.startswith(p) for p in skips)
 
     while pending:
         path = pending.pop()
         if path in seen:
             continue
         seen.add(path)
+        if ignored(path):
+            continue
         url = urljoin(base_url, path.lstrip("/"))
         try:
             data = http_get(url)
@@ -139,8 +167,13 @@ def download_graph(base_url: str, seed_paths: Iterable[str], out_dir: Path) -> d
                 text = data.decode("utf-8", errors="ignore")
             except Exception:  # noqa: BLE001
                 continue
-            more = extract_paths(base_url, text, from_css=(suffix == ".css"))
-            pending.update(p for p in more if p not in seen)
+            more = extract_paths(
+                base_url,
+                text,
+                from_css=(suffix == ".css"),
+                source_url=url,
+            )
+            pending.update(p for p in more if p not in seen and not ignored(p))
 
     return downloaded
 
@@ -210,19 +243,26 @@ def main() -> int:
         out_dir.mkdir(parents=True, exist_ok=True)
 
     copied_from_checkout = 0
+    skip_prefixes: list[str] = []
     web_checkout = Path(args.web_checkout) if args.web_checkout else None
     if web_checkout and web_checkout.exists():
         public_dir = web_checkout / "public"
         eprint(f"copy static files from {public_dir}")
         for name in ("data", "maplibre"):
-            copied_from_checkout += copy_tree(public_dir / name, out_dir / name)
+            copied = copy_tree(public_dir / name, out_dir / name)
+            copied_from_checkout += copied
+            if copied:
+                skip_prefixes.append(f"/{name}/")
         favicon = public_dir / "favicon.ico"
         if not favicon.exists():
             favicon = web_checkout / "src" / "app" / "favicon.ico"
         if favicon.exists():
             shutil.copy2(favicon, out_dir / "favicon.ico")
             copied_from_checkout += 1
+            skip_prefixes.append("/favicon.ico")
         eprint(f"copied {copied_from_checkout} files from web checkout")
+        if skip_prefixes:
+            eprint(f"skip re-crawl of: {', '.join(skip_prefixes)}")
     else:
         eprint("no web checkout; /data and /maplibre will be crawled from the deploy URL")
 
@@ -234,7 +274,7 @@ def main() -> int:
     dpl_match = DPL_RE.search(index_text)
     deployment_id = dpl_match.group("id") if dpl_match else ""
 
-    seed = extract_paths(base_url, index_text)
+    seed = extract_paths(base_url, index_text, source_url=urljoin(base_url, "/"))
     seed.add("/favicon.ico")
     if not (out_dir / "data").exists():
         # Minimal seeds; JS references will pull the rest when possible.
@@ -248,7 +288,7 @@ def main() -> int:
             }
         )
 
-    downloaded = download_graph(base_url, seed, out_dir)
+    downloaded = download_graph(base_url, seed, out_dir, skip_prefixes=skip_prefixes)
     preserve_cordova(out_dir)
 
     meta = {
