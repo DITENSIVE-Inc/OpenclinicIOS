@@ -5,3 +5,5 @@ DerivedData/
 
 # チャット引き継ぎ用。リポジトリには入れない。
 docs/web-parity-handoff.md
+docs/maplibre-unused-assets.md
+docs/web-sync.md

@@ -1,0 +1,162 @@
+name: Sync web bundle
+
+# Semi-automatic: opens a PR when the bundled web UI should be refreshed.
+# Humans review and merge. This workflow never merges on its own.
+#
+# Setup:
+#   - Secret WEB_REPO_TOKEN: PAT that can clone DITENSIVE-Inc/OpencrinicAI
+# Triggers:
+#   - workflow_dispatch (manual)
+#   - weekly schedule
+#   - repository_dispatch type web-main-updated (optional, from the web repo)
+# Sync behavior:
+#   - index.html and /_next from WEB_APP_URL (default https://opencrinic-ai.vercel.app)
+#   - /data and /maplibre from the web repo public/ checkout
+
+on:
+  workflow_dispatch:
+    inputs:
+      web_ref:
+        description: Web repo branch, tag, or SHA to copy public/ from
+        required: true
+        default: main
+      web_app_url:
+        description: Deployed web origin for index.html and /_next
+        required: true
+        default: https://opencrinic-ai.vercel.app
+  schedule:
+    # Monday 03:00 UTC — reminder PR if the deploy has drifted
+    - cron: "0 3 * * 1"
+  repository_dispatch:
+    types: [web-main-updated]
+
+concurrency:
+  group: sync-web-bundle
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout iOS repo
+        uses: actions/checkout@v7
+
+      - name: Resolve sync inputs
+        id: inputs
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          DISPATCH_REF: ${{ github.event.client_payload.web_ref }}
+          DISPATCH_SHA: ${{ github.event.client_payload.web_sha }}
+          DISPATCH_URL: ${{ github.event.client_payload.web_app_url }}
+          MANUAL_REF: ${{ inputs.web_ref }}
+          MANUAL_URL: ${{ inputs.web_app_url }}
+        run: |
+          set -euo pipefail
+          WEB_REPO="${WEB_REPO:-DITENSIVE-Inc/OpencrinicAI}"
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            WEB_REF="${MANUAL_REF:-main}"
+            WEB_APP_URL="${MANUAL_URL:-https://opencrinic-ai.vercel.app}"
+            WEB_SHA=""
+          elif [ "$EVENT_NAME" = "repository_dispatch" ]; then
+            WEB_REF="${DISPATCH_REF:-main}"
+            WEB_APP_URL="${DISPATCH_URL:-https://opencrinic-ai.vercel.app}"
+            WEB_SHA="${DISPATCH_SHA:-}"
+          else
+            WEB_REF="main"
+            WEB_APP_URL="https://opencrinic-ai.vercel.app"
+            WEB_SHA=""
+          fi
+          {
+            echo "web_repo=$WEB_REPO"
+            echo "web_ref=$WEB_REF"
+            echo "web_app_url=$WEB_APP_URL"
+            echo "web_sha=$WEB_SHA"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Checkout web repo
+        id: web
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ steps.inputs.outputs.web_repo }}
+          ref: ${{ steps.inputs.outputs.web_ref }}
+          path: .web-checkout
+          token: ${{ secrets.WEB_REPO_TOKEN }}
+
+      - name: Record web SHA
+        id: websha
+        run: |
+          set -euo pipefail
+          SHA="${{ steps.inputs.outputs.web_sha }}"
+          if [ -z "$SHA" ]; then
+            SHA="$(git -C .web-checkout rev-parse HEAD)"
+          fi
+          echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+          echo "Web SHA: $SHA"
+
+      - name: Sync App/public
+        env:
+          WEB_APP_URL: ${{ steps.inputs.outputs.web_app_url }}
+          WEB_CHECKOUT: ${{ github.workspace }}/.web-checkout
+          WEB_REF: ${{ steps.inputs.outputs.web_ref }}
+          WEB_SHA: ${{ steps.websha.outputs.sha }}
+        run: |
+          set -euo pipefail
+          python3 scripts/sync-web-bundle.py
+          # The web checkout must not appear in the PR.
+          rm -rf .web-checkout
+
+      - name: Detect changes
+        id: diff
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- App/public; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No App/public changes."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            git status --short -- App/public | head -100
+          fi
+
+      - name: Create or update PR
+        if: steps.diff.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: chore/sync-web-bundle
+          delete-branch: true
+          title: "chore: sync bundled web UI from ${{ steps.inputs.outputs.web_ref }}"
+          commit-message: |
+            chore: sync bundled web UI from ${{ steps.inputs.outputs.web_ref }}
+
+            Source: ${{ steps.inputs.outputs.web_repo }}@${{ steps.websha.outputs.sha }}
+            Deploy: ${{ steps.inputs.outputs.web_app_url }}
+          body: |
+            ## 概要
+
+            Web（`${{ steps.inputs.outputs.web_repo }}`）の同梱 UI を `App/public` に取り込みました。
+            **マージは人手で判断してください。** このワークフローは自動マージしません。
+
+            ## 同期元
+
+            - Web ref: `${{ steps.inputs.outputs.web_ref }}`
+            - Web SHA: `${{ steps.websha.outputs.sha }}`
+            - Deploy URL: ${{ steps.inputs.outputs.web_app_url }}
+            - 記録: `App/public/.web-sync-meta.json`
+
+            ## テスト内容
+
+            - [ ] シミュレータでビルドできる
+            - [ ] 条件設定 / ランキング / 診療圏 / チャットの表示確認
+            - [ ] 地図と主要データが読み込める
+            - [ ] 意図しない iOS 専用差分を上書きしていない
+
+            ## 補足
+
+            UI シェル（`index.html` / `/_next`）はデプロイ URL から取得しています。
+            `/data` と `/maplibre` は Web リポジトリの `public/` を優先してコピーしています。
