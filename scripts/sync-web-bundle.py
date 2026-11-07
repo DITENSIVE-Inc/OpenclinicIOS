@@ -34,6 +34,23 @@ TEXT_SUFFIXES = (".html", ".js", ".mjs", ".css", ".json", ".txt", ".svg")
 MAPLIBRE_DEV_NAME_RE = re.compile(
     r"^maplibre-gl(?:-worker|-shared)?-dev\."
 )
+# National clinic PMTiles are hosted on R2. Capacitor's origin
+# (capacitor://localhost) is not in that bucket's CORS allowlist, and PMTiles
+# requires HTTP Range — so the iOS shell must load them through the Web
+# deploy's byte-serving proxy instead of R2 directly.
+#
+# Only rewrite the known clinic upstream URL(s). A broad pub-*.r2.dev/*.pmtiles
+# match would incorrectly point future non-clinic archives at /api/clinic-pmtiles.
+# Keep DEFAULT in sync with OpencrinicAI's clinic-pmtiles route DEFAULT_UPSTREAM.
+DEFAULT_CLINIC_PMTILES_UPSTREAM = (
+    "https://pub-d14db819fe324e45b72d41d7c7cf70c6.r2.dev/clinic_map_20261017.pmtiles"
+)
+CLINIC_PMTILES_PROXY_PATH = "/api/clinic-pmtiles"
+# Catch clinic archives whose URL drifted from the known list (fail sync loudly).
+UNSUPPORTED_CLINIC_R2_PMTILES_RE = re.compile(
+    r"https://pub-[a-z0-9]+\.r2\.dev/[A-Za-z0-9_./%~+-]*clinic[A-Za-z0-9_./%~+-]*\.pmtiles",
+    re.IGNORECASE,
+)
 
 
 def eprint(*args: object) -> None:
@@ -43,6 +60,102 @@ def eprint(*args: object) -> None:
 def is_skipped_asset(path: str) -> bool:
     """Return True for known-unused deploy assets we should not ship."""
     return bool(MAPLIBRE_DEV_NAME_RE.match(Path(path).name))
+
+
+def clinic_pmtiles_upstream_urls() -> tuple[str, ...]:
+    """Upstream R2 URL(s) eligible for proxy rewrite.
+
+    Override with CLINIC_TILES_UPSTREAM_URL (same name as the Web proxy env).
+    """
+    from_env = (os.environ.get("CLINIC_TILES_UPSTREAM_URL") or "").strip()
+    if from_env:
+        return (from_env,)
+    return (DEFAULT_CLINIC_PMTILES_UPSTREAM,)
+
+
+def clinic_pmtiles_proxy_url(web_app_url: str) -> str:
+    return urljoin(web_app_url.rstrip("/") + "/", CLINIC_PMTILES_PROXY_PATH.lstrip("/"))
+
+
+def iter_text_bundle_files(out_dir: Path) -> Iterable[Path]:
+    for path in out_dir.rglob("*"):
+        if path.is_file() and path.suffix.lower() in TEXT_SUFFIXES:
+            yield path
+
+
+def rewrite_clinic_pmtiles_urls(out_dir: Path, web_app_url: str) -> int:
+    """Point bundled JS at the Vercel Range/CORS proxy for Capacitor."""
+    proxy = clinic_pmtiles_proxy_url(web_app_url)
+    upstreams = clinic_pmtiles_upstream_urls()
+    rewritten = 0
+    for path in iter_text_bundle_files(out_dir):
+        try:
+            text = path.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            continue
+        new_text = text
+        n = 0
+        for upstream in upstreams:
+            count = new_text.count(upstream)
+            if not count:
+                continue
+            new_text = new_text.replace(upstream, proxy)
+            n += count
+        if n:
+            path.write_text(new_text, encoding="utf-8")
+            rewritten += n
+            eprint(f"rewrite clinic pmtiles → proxy in {path.relative_to(out_dir)} ({n})")
+    return rewritten
+
+
+def verify_clinic_pmtiles_proxy(out_dir: Path, web_app_url: str) -> list[str]:
+    """Fail sync when clinic tiles still hit R2, or the proxy URL is missing.
+
+    Already-proxied bundles and builds without a clinic layer are OK (0 rewrites).
+    """
+    proxy = clinic_pmtiles_proxy_url(web_app_url)
+    upstreams = set(clinic_pmtiles_upstream_urls())
+    leftover_direct: list[str] = []
+    unsupported: list[str] = []
+    saw_proxy = False
+    saw_clinic_layer = False
+
+    for path in iter_text_bundle_files(out_dir):
+        try:
+            text = path.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            continue
+        rel = str(path.relative_to(out_dir))
+        if proxy in text:
+            saw_proxy = True
+            saw_clinic_layer = True
+        for upstream in upstreams:
+            if upstream in text:
+                saw_clinic_layer = True
+                leftover_direct.append(f"{rel}: {upstream}")
+        for match in UNSUPPORTED_CLINIC_R2_PMTILES_RE.finditer(text):
+            url = match.group(0)
+            if url in upstreams:
+                continue
+            saw_clinic_layer = True
+            unsupported.append(f"{rel}: {url}")
+
+    errors: list[str] = []
+    if leftover_direct:
+        errors.append("clinic PMTiles still reference R2 directly after rewrite:")
+        errors.extend(f"  {item}" for item in leftover_direct[:20])
+    if unsupported:
+        errors.append(
+            "unsupported clinic PMTiles R2 URLs "
+            "(add to CLINIC_TILES_UPSTREAM_URL / DEFAULT_CLINIC_PMTILES_UPSTREAM):"
+        )
+        errors.extend(f"  {item}" for item in unsupported[:20])
+    if saw_clinic_layer and not saw_proxy:
+        errors.append(
+            "clinic layer appears enabled but expected absolute proxy URL is missing: "
+            f"{proxy}"
+        )
+    return errors
 
 
 def http_get(url: str, timeout: int = 120) -> bytes:
@@ -375,6 +488,14 @@ def main() -> int:
             eprint(f"  ... and {len(missing) - 50} more")
         return 1
 
+    clinic_pmtiles_rewrites = rewrite_clinic_pmtiles_urls(out_dir, base_url)
+    clinic_pmtiles_errors = verify_clinic_pmtiles_proxy(out_dir, base_url)
+    if clinic_pmtiles_errors:
+        eprint("error: clinic PMTiles proxy verification failed:")
+        for line in clinic_pmtiles_errors:
+            eprint(f"  {line}")
+        return 1
+
     meta = {
         "synced_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "web_app_url": base_url.rstrip("/"),
@@ -384,11 +505,17 @@ def main() -> int:
         "copied_from_checkout": copied_from_checkout,
         "downloaded_paths": len(downloaded),
         "pruned_unused_assets": pruned,
+        "clinic_pmtiles_proxy_rewrites": clinic_pmtiles_rewrites,
+        "clinic_pmtiles_proxy_url": clinic_pmtiles_proxy_url(base_url),
+        "clinic_pmtiles_upstream_urls": list(clinic_pmtiles_upstream_urls()),
         "verified_required_refs": True,
+        "verified_clinic_pmtiles_proxy": True,
         "note": (
             "UI shell (/_next, index.html) comes from the deployed web app. "
             "Static /data and /maplibre prefer the web git checkout when provided. "
-            "MapLibre *-dev media modules are omitted; CSS/index refs are verified."
+            "MapLibre *-dev media modules are omitted; CSS/index refs are verified. "
+            "Known R2 clinic PMTiles URLs are rewritten to /api/clinic-pmtiles on the "
+            "web deploy so Capacitor can use Range requests with CORS."
         ),
     }
     write_bytes(out_dir / ".web-sync-meta.json", (json.dumps(meta, indent=2) + "\n").encode())
