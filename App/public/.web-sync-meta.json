@@ -1,18 +1,18 @@
 {
-  "synced_at": "2026-11-07T05:09:29Z",
+  "synced_at": "2026-11-07T13:20:28Z",
   "web_app_url": "https://opencrinic-ai.vercel.app",
   "web_ref": "main",
-  "web_sha": "fa79083f603ecb3c04dbdeb9ec32adb3ab9b76ef",
-  "deployment_id": "dpl_53wpSHr92oB6KD9qZkPYNoPi4yA8",
+  "web_sha": "9f6fdd0a66fcf747b344f6f8a6405d5673ecc372",
+  "deployment_id": "dpl_CaWtrYVfqcsv6xgikwYHdtrKkhgx",
   "copied_from_checkout": 3497,
-  "downloaded_paths": 3513,
-  "note": "UI shell (/_next, index.html) comes from the deployed web app. Static /data and /maplibre prefer the web git checkout when provided. MapLibre *-dev media modules are omitted; CSS/index refs are verified.",
-  "pruned_unused_assets": [
-    "/_next/static/immutable/media/maplibre-gl-worker-dev.1yemnhhap0s4x.mjs",
-    "/_next/static/immutable/media/maplibre-gl-shared-dev.13xqw5a6ql_3t.mjs",
-    "/_next/static/immutable/media/maplibre-gl-dev.0u41oreld24te.mjs"
+  "downloaded_paths": 147,
+  "pruned_unused_assets": [],
+  "clinic_pmtiles_proxy_rewrites": 1,
+  "clinic_pmtiles_proxy_url": "https://opencrinic-ai.vercel.app/api/clinic-pmtiles",
+  "clinic_pmtiles_upstream_urls": [
+    "https://pub-d14db819fe324e45b72d41d7c7cf70c6.r2.dev/clinic_map_20261017.pmtiles"
   ],
   "verified_required_refs": true,
-  "clinic_pmtiles_proxy_url": "https://opencrinic-ai.vercel.app/api/clinic-pmtiles",
-  "clinic_pmtiles_proxy_rewrites": 1
+  "verified_clinic_pmtiles_proxy": true,
+  "note": "UI shell (/_next, index.html) comes from the deployed web app. Static /data and /maplibre prefer the web git checkout when provided. MapLibre *-dev media modules are omitted; CSS/index refs are verified. Known R2 clinic PMTiles URLs are rewritten to /api/clinic-pmtiles on the web deploy so Capacitor can use Range requests with CORS."
 }
