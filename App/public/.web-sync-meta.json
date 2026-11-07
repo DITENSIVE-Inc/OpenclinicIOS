@@ -12,5 +12,7 @@
     "/_next/static/immutable/media/maplibre-gl-shared-dev.13xqw5a6ql_3t.mjs",
     "/_next/static/immutable/media/maplibre-gl-dev.0u41oreld24te.mjs"
   ],
-  "verified_required_refs": true
+  "verified_required_refs": true,
+  "clinic_pmtiles_proxy_url": "https://opencrinic-ai.vercel.app/api/clinic-pmtiles",
+  "clinic_pmtiles_proxy_rewrites": 1
 }

@@ -34,6 +34,14 @@ TEXT_SUFFIXES = (".html", ".js", ".mjs", ".css", ".json", ".txt", ".svg")
 MAPLIBRE_DEV_NAME_RE = re.compile(
     r"^maplibre-gl(?:-worker|-shared)?-dev\."
 )
+# National clinic PMTiles are hosted on R2. Capacitor's origin
+# (capacitor://localhost) is not in that bucket's CORS allowlist, and PMTiles
+# requires HTTP Range — so the iOS shell must load them through the Web
+# deploy's byte-serving proxy instead of R2 directly.
+R2_CLINIC_PMTILES_RE = re.compile(
+    r"https://pub-[a-z0-9]+\.r2\.dev/[A-Za-z0-9_./%~+-]+\.pmtiles"
+)
+CLINIC_PMTILES_PROXY_PATH = "/api/clinic-pmtiles"
 
 
 def eprint(*args: object) -> None:
@@ -43,6 +51,29 @@ def eprint(*args: object) -> None:
 def is_skipped_asset(path: str) -> bool:
     """Return True for known-unused deploy assets we should not ship."""
     return bool(MAPLIBRE_DEV_NAME_RE.match(Path(path).name))
+
+
+def clinic_pmtiles_proxy_url(web_app_url: str) -> str:
+    return urljoin(web_app_url.rstrip("/") + "/", CLINIC_PMTILES_PROXY_PATH.lstrip("/"))
+
+
+def rewrite_clinic_pmtiles_urls(out_dir: Path, web_app_url: str) -> int:
+    """Point bundled JS at the Vercel Range/CORS proxy for Capacitor."""
+    proxy = clinic_pmtiles_proxy_url(web_app_url)
+    rewritten = 0
+    for path in out_dir.rglob("*"):
+        if not path.is_file() or path.suffix.lower() not in TEXT_SUFFIXES:
+            continue
+        try:
+            text = path.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            continue
+        new_text, n = R2_CLINIC_PMTILES_RE.subn(proxy, text)
+        if n:
+            path.write_text(new_text, encoding="utf-8")
+            rewritten += n
+            eprint(f"rewrite clinic pmtiles → proxy in {path.relative_to(out_dir)} ({n})")
+    return rewritten
 
 
 def http_get(url: str, timeout: int = 120) -> bytes:
@@ -375,6 +406,8 @@ def main() -> int:
             eprint(f"  ... and {len(missing) - 50} more")
         return 1
 
+    clinic_pmtiles_rewrites = rewrite_clinic_pmtiles_urls(out_dir, base_url)
+
     meta = {
         "synced_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "web_app_url": base_url.rstrip("/"),
@@ -384,11 +417,15 @@ def main() -> int:
         "copied_from_checkout": copied_from_checkout,
         "downloaded_paths": len(downloaded),
         "pruned_unused_assets": pruned,
+        "clinic_pmtiles_proxy_rewrites": clinic_pmtiles_rewrites,
+        "clinic_pmtiles_proxy_url": clinic_pmtiles_proxy_url(base_url),
         "verified_required_refs": True,
         "note": (
             "UI shell (/_next, index.html) comes from the deployed web app. "
             "Static /data and /maplibre prefer the web git checkout when provided. "
-            "MapLibre *-dev media modules are omitted; CSS/index refs are verified."
+            "MapLibre *-dev media modules are omitted; CSS/index refs are verified. "
+            "R2 clinic PMTiles URLs are rewritten to /api/clinic-pmtiles on the "
+            "web deploy so Capacitor can use Range requests with CORS."
         ),
     }
     write_bytes(out_dir / ".web-sync-meta.json", (json.dumps(meta, indent=2) + "\n").encode())
