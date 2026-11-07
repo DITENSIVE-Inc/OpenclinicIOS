@@ -29,10 +29,20 @@ DPL_RE = re.compile(r'data-dpl-id="(?P<id>dpl_[A-Za-z0-9]+)"')
 
 SKIP_SUFFIXES = (".map",)
 TEXT_SUFFIXES = (".html", ".js", ".mjs", ".css", ".json", ".txt", ".svg")
+# Turbopack registers MapLibre dev builds as modules, but the app sets
+# WORKER_URL to /maplibre/maplibre-gl-worker.mjs and never loads these.
+MAPLIBRE_DEV_NAME_RE = re.compile(
+    r"^maplibre-gl(?:-worker|-shared)?-dev\."
+)
 
 
 def eprint(*args: object) -> None:
     print(*args, file=sys.stderr)
+
+
+def is_skipped_asset(path: str) -> bool:
+    """Return True for known-unused deploy assets we should not ship."""
+    return bool(MAPLIBRE_DEV_NAME_RE.match(Path(path).name))
 
 
 def http_get(url: str, timeout: int = 120) -> bytes:
@@ -137,6 +147,8 @@ def download_graph(
     skips = tuple(skip_prefixes)
 
     def ignored(path: str) -> bool:
+        if is_skipped_asset(path):
+            return True
         return any(path == p.rstrip("/") or path.startswith(p) for p in skips)
 
     while pending:
@@ -145,6 +157,8 @@ def download_graph(
             continue
         seen.add(path)
         if ignored(path):
+            if is_skipped_asset(path):
+                eprint(f"omit unused asset {path}")
             continue
         url = urljoin(base_url, path.lstrip("/"))
         try:
@@ -183,6 +197,66 @@ def preserve_cordova(out_dir: Path) -> None:
         path = out_dir / name
         if not path.exists():
             path.write_text("")
+
+
+def prune_skipped_assets(out_dir: Path) -> list[str]:
+    """Remove any skipped assets that still landed on disk."""
+    removed: list[str] = []
+    media = out_dir / "_next" / "static" / "immutable" / "media"
+    if not media.exists():
+        return removed
+    for path in media.iterdir():
+        if path.is_file() and is_skipped_asset(path.name):
+            path.unlink()
+            removed.append("/" + str(path.relative_to(out_dir)).replace("\\", "/"))
+            eprint(f"pruned {removed[-1]}")
+    return removed
+
+
+def collect_required_refs(out_dir: Path, origin: str) -> set[str]:
+    """Local paths that must exist for the shell/CSS to load correctly.
+
+    Intentionally checks index.html links and CSS url(...) only. JS chunk
+    string tables mention unused Turbopack modules (e.g. maplibre-*-dev) that
+    are never fetched at runtime.
+    """
+    required: set[str] = {"/index.html", "/favicon.ico"}
+    index = out_dir / "index.html"
+    if index.exists():
+        text = index.read_text(errors="ignore")
+        required.update(
+            extract_paths(origin, text, source_url=urljoin(origin, "/"))
+        )
+
+    for css in (out_dir / "_next").rglob("*.css") if (out_dir / "_next").exists() else []:
+        rel = "/" + str(css.relative_to(out_dir)).replace("\\", "/")
+        required.add(rel)
+        source_url = urljoin(origin, rel.lstrip("/"))
+        required.update(
+            extract_paths(
+                origin,
+                css.read_text(errors="ignore"),
+                from_css=True,
+                source_url=source_url,
+            )
+        )
+    return {p for p in required if not is_skipped_asset(p)}
+
+
+def verify_required_refs(out_dir: Path, origin: str) -> list[str]:
+    missing: list[str] = []
+    for path in sorted(collect_required_refs(out_dir, origin)):
+        if path.startswith("/data/") or path.startswith("/maplibre/"):
+            # Large static trees are validated lightly: only require the tree
+            # root to exist when the path was discovered.
+            root_name = path.strip("/").split("/", 1)[0]
+            if not (out_dir / root_name).exists():
+                missing.append(path)
+            continue
+        local = out_dir / path.lstrip("/")
+        if not local.is_file():
+            missing.append(path)
+    return missing
 
 
 def parse_args() -> argparse.Namespace:
@@ -290,6 +364,16 @@ def main() -> int:
 
     downloaded = download_graph(base_url, seed, out_dir, skip_prefixes=skip_prefixes)
     preserve_cordova(out_dir)
+    pruned = prune_skipped_assets(out_dir)
+
+    missing = verify_required_refs(out_dir, base_url)
+    if missing:
+        eprint("error: required local refs missing after sync:")
+        for path in missing[:50]:
+            eprint(f"  {path}")
+        if len(missing) > 50:
+            eprint(f"  ... and {len(missing) - 50} more")
+        return 1
 
     meta = {
         "synced_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -299,9 +383,12 @@ def main() -> int:
         "deployment_id": deployment_id,
         "copied_from_checkout": copied_from_checkout,
         "downloaded_paths": len(downloaded),
+        "pruned_unused_assets": pruned,
+        "verified_required_refs": True,
         "note": (
             "UI shell (/_next, index.html) comes from the deployed web app. "
-            "Static /data and /maplibre prefer the web git checkout when provided."
+            "Static /data and /maplibre prefer the web git checkout when provided. "
+            "MapLibre *-dev media modules are omitted; CSS/index refs are verified."
         ),
     }
     write_bytes(out_dir / ".web-sync-meta.json", (json.dumps(meta, indent=2) + "\n").encode())

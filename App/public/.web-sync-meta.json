@@ -6,5 +6,11 @@
   "deployment_id": "dpl_53wpSHr92oB6KD9qZkPYNoPi4yA8",
   "copied_from_checkout": 3497,
   "downloaded_paths": 3513,
-  "note": "UI shell (/_next, index.html) comes from the deployed web app. Static /data and /maplibre prefer the web git checkout when provided."
+  "note": "UI shell (/_next, index.html) comes from the deployed web app. Static /data and /maplibre prefer the web git checkout when provided. MapLibre *-dev media modules are omitted; CSS/index refs are verified.",
+  "pruned_unused_assets": [
+    "/_next/static/immutable/media/maplibre-gl-worker-dev.1yemnhhap0s4x.mjs",
+    "/_next/static/immutable/media/maplibre-gl-shared-dev.13xqw5a6ql_3t.mjs",
+    "/_next/static/immutable/media/maplibre-gl-dev.0u41oreld24te.mjs"
+  ],
+  "verified_required_refs": true
 }
