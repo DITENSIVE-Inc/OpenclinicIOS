@@ -29,10 +29,20 @@ DPL_RE = re.compile(r'data-dpl-id="(?P<id>dpl_[A-Za-z0-9]+)"')
 
 SKIP_SUFFIXES = (".map",)
 TEXT_SUFFIXES = (".html", ".js", ".mjs", ".css", ".json", ".txt", ".svg")
+# Turbopack registers MapLibre dev builds as modules, but the app sets
+# WORKER_URL to /maplibre/maplibre-gl-worker.mjs and never loads these.
+MAPLIBRE_DEV_NAME_RE = re.compile(
+    r"^maplibre-gl(?:-worker|-shared)?-dev\."
+)
 
 
 def eprint(*args: object) -> None:
     print(*args, file=sys.stderr)
+
+
+def is_skipped_asset(path: str) -> bool:
+    """Return True for known-unused deploy assets we should not ship."""
+    return bool(MAPLIBRE_DEV_NAME_RE.match(Path(path).name))
 
 
 def http_get(url: str, timeout: int = 120) -> bytes:
@@ -55,11 +65,17 @@ def is_same_origin(base: str, candidate: str) -> bool:
     return (c.scheme, c.netloc) == (b.scheme, b.netloc)
 
 
-def to_site_path(base: str, raw: str) -> str | None:
+def to_site_path(origin: str, raw: str, resolve_against: str | None = None) -> str | None:
     if raw.startswith("data:") or raw.startswith("blob:") or raw.startswith("#"):
         return None
-    absolute = urljoin(base if base.endswith("/") else base + "/", raw)
-    if not is_same_origin(base, absolute):
+    # CSS/JS often use relative urls (e.g. ../media/foo.woff2). Resolve those
+    # against the asset URL, not the site root — otherwise fonts become /media/...
+    # and are dropped by the /_next/ filter.
+    base = resolve_against or origin
+    if not base.endswith("/") and not re.search(r"\.[A-Za-z0-9]+$", urlparse(base).path):
+        base = base + "/"
+    absolute = urljoin(base, raw)
+    if not is_same_origin(origin, absolute):
         return None
     path = urlparse(absolute).path
     if not path.startswith("/"):
@@ -69,20 +85,25 @@ def to_site_path(base: str, raw: str) -> str | None:
     return path
 
 
-def extract_paths(base: str, body: str, from_css: bool = False) -> set[str]:
+def extract_paths(
+    base: str,
+    body: str,
+    from_css: bool = False,
+    source_url: str | None = None,
+) -> set[str]:
     found: set[str] = set()
     for match in ASSET_RE.finditer(body):
-        path = to_site_path(base, match.group("url"))
+        path = to_site_path(base, match.group("url"), resolve_against=source_url)
         if path:
             found.add(path)
     if from_css:
         for match in CSS_URL_RE.finditer(body):
-            path = to_site_path(base, match.group("url"))
+            path = to_site_path(base, match.group("url"), resolve_against=source_url)
             if path and path.startswith("/_next/"):
                 found.add(path)
     # Chunk paths without a leading slash sometimes appear in Turbopack payloads.
     for match in re.finditer(r"""(?P<p>static/immutable/[A-Za-z0-9_./+-]+\.(?:js|mjs|css|woff2))""", body):
-        path = to_site_path(base, "/_next/" + match.group("p"))
+        path = to_site_path(base, "/_next/" + match.group("p"), resolve_against=source_url)
         if path:
             found.add(path)
     return found
@@ -108,16 +129,37 @@ def write_bytes(path: Path, data: bytes) -> None:
     path.write_bytes(data)
 
 
-def download_graph(base_url: str, seed_paths: Iterable[str], out_dir: Path) -> dict[str, str]:
+def download_graph(
+    base_url: str,
+    seed_paths: Iterable[str],
+    out_dir: Path,
+    skip_prefixes: Iterable[str] = (),
+) -> dict[str, str]:
+    """Crawl deploy assets into out_dir.
+
+    skip_prefixes: path prefixes already populated from the web checkout
+    (typically /data/ and /maplibre/). Still allow explicit seed hits that
+    already exist on disk to be skipped without re-download.
+    """
     pending = set(seed_paths)
     seen: set[str] = set()
     downloaded: dict[str, str] = {}
+    skips = tuple(skip_prefixes)
+
+    def ignored(path: str) -> bool:
+        if is_skipped_asset(path):
+            return True
+        return any(path == p.rstrip("/") or path.startswith(p) for p in skips)
 
     while pending:
         path = pending.pop()
         if path in seen:
             continue
         seen.add(path)
+        if ignored(path):
+            if is_skipped_asset(path):
+                eprint(f"omit unused asset {path}")
+            continue
         url = urljoin(base_url, path.lstrip("/"))
         try:
             data = http_get(url)
@@ -139,8 +181,13 @@ def download_graph(base_url: str, seed_paths: Iterable[str], out_dir: Path) -> d
                 text = data.decode("utf-8", errors="ignore")
             except Exception:  # noqa: BLE001
                 continue
-            more = extract_paths(base_url, text, from_css=(suffix == ".css"))
-            pending.update(p for p in more if p not in seen)
+            more = extract_paths(
+                base_url,
+                text,
+                from_css=(suffix == ".css"),
+                source_url=url,
+            )
+            pending.update(p for p in more if p not in seen and not ignored(p))
 
     return downloaded
 
@@ -150,6 +197,66 @@ def preserve_cordova(out_dir: Path) -> None:
         path = out_dir / name
         if not path.exists():
             path.write_text("")
+
+
+def prune_skipped_assets(out_dir: Path) -> list[str]:
+    """Remove any skipped assets that still landed on disk."""
+    removed: list[str] = []
+    media = out_dir / "_next" / "static" / "immutable" / "media"
+    if not media.exists():
+        return removed
+    for path in media.iterdir():
+        if path.is_file() and is_skipped_asset(path.name):
+            path.unlink()
+            removed.append("/" + str(path.relative_to(out_dir)).replace("\\", "/"))
+            eprint(f"pruned {removed[-1]}")
+    return removed
+
+
+def collect_required_refs(out_dir: Path, origin: str) -> set[str]:
+    """Local paths that must exist for the shell/CSS to load correctly.
+
+    Intentionally checks index.html links and CSS url(...) only. JS chunk
+    string tables mention unused Turbopack modules (e.g. maplibre-*-dev) that
+    are never fetched at runtime.
+    """
+    required: set[str] = {"/index.html", "/favicon.ico"}
+    index = out_dir / "index.html"
+    if index.exists():
+        text = index.read_text(errors="ignore")
+        required.update(
+            extract_paths(origin, text, source_url=urljoin(origin, "/"))
+        )
+
+    for css in (out_dir / "_next").rglob("*.css") if (out_dir / "_next").exists() else []:
+        rel = "/" + str(css.relative_to(out_dir)).replace("\\", "/")
+        required.add(rel)
+        source_url = urljoin(origin, rel.lstrip("/"))
+        required.update(
+            extract_paths(
+                origin,
+                css.read_text(errors="ignore"),
+                from_css=True,
+                source_url=source_url,
+            )
+        )
+    return {p for p in required if not is_skipped_asset(p)}
+
+
+def verify_required_refs(out_dir: Path, origin: str) -> list[str]:
+    missing: list[str] = []
+    for path in sorted(collect_required_refs(out_dir, origin)):
+        if path.startswith("/data/") or path.startswith("/maplibre/"):
+            # Large static trees are validated lightly: only require the tree
+            # root to exist when the path was discovered.
+            root_name = path.strip("/").split("/", 1)[0]
+            if not (out_dir / root_name).exists():
+                missing.append(path)
+            continue
+        local = out_dir / path.lstrip("/")
+        if not local.is_file():
+            missing.append(path)
+    return missing
 
 
 def parse_args() -> argparse.Namespace:
@@ -210,19 +317,26 @@ def main() -> int:
         out_dir.mkdir(parents=True, exist_ok=True)
 
     copied_from_checkout = 0
+    skip_prefixes: list[str] = []
     web_checkout = Path(args.web_checkout) if args.web_checkout else None
     if web_checkout and web_checkout.exists():
         public_dir = web_checkout / "public"
         eprint(f"copy static files from {public_dir}")
         for name in ("data", "maplibre"):
-            copied_from_checkout += copy_tree(public_dir / name, out_dir / name)
+            copied = copy_tree(public_dir / name, out_dir / name)
+            copied_from_checkout += copied
+            if copied:
+                skip_prefixes.append(f"/{name}/")
         favicon = public_dir / "favicon.ico"
         if not favicon.exists():
             favicon = web_checkout / "src" / "app" / "favicon.ico"
         if favicon.exists():
             shutil.copy2(favicon, out_dir / "favicon.ico")
             copied_from_checkout += 1
+            skip_prefixes.append("/favicon.ico")
         eprint(f"copied {copied_from_checkout} files from web checkout")
+        if skip_prefixes:
+            eprint(f"skip re-crawl of: {', '.join(skip_prefixes)}")
     else:
         eprint("no web checkout; /data and /maplibre will be crawled from the deploy URL")
 
@@ -234,7 +348,7 @@ def main() -> int:
     dpl_match = DPL_RE.search(index_text)
     deployment_id = dpl_match.group("id") if dpl_match else ""
 
-    seed = extract_paths(base_url, index_text)
+    seed = extract_paths(base_url, index_text, source_url=urljoin(base_url, "/"))
     seed.add("/favicon.ico")
     if not (out_dir / "data").exists():
         # Minimal seeds; JS references will pull the rest when possible.
@@ -248,8 +362,18 @@ def main() -> int:
             }
         )
 
-    downloaded = download_graph(base_url, seed, out_dir)
+    downloaded = download_graph(base_url, seed, out_dir, skip_prefixes=skip_prefixes)
     preserve_cordova(out_dir)
+    pruned = prune_skipped_assets(out_dir)
+
+    missing = verify_required_refs(out_dir, base_url)
+    if missing:
+        eprint("error: required local refs missing after sync:")
+        for path in missing[:50]:
+            eprint(f"  {path}")
+        if len(missing) > 50:
+            eprint(f"  ... and {len(missing) - 50} more")
+        return 1
 
     meta = {
         "synced_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -259,9 +383,12 @@ def main() -> int:
         "deployment_id": deployment_id,
         "copied_from_checkout": copied_from_checkout,
         "downloaded_paths": len(downloaded),
+        "pruned_unused_assets": pruned,
+        "verified_required_refs": True,
         "note": (
             "UI shell (/_next, index.html) comes from the deployed web app. "
-            "Static /data and /maplibre prefer the web git checkout when provided."
+            "Static /data and /maplibre prefer the web git checkout when provided. "
+            "MapLibre *-dev media modules are omitted; CSS/index refs are verified."
         ),
     }
     write_bytes(out_dir / ".web-sync-meta.json", (json.dumps(meta, indent=2) + "\n").encode())
